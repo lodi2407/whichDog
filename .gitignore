@@ -2,6 +2,7 @@
 .env
 
 # air related files
+.air.toml
 tmp/
 
 # Binaries for programs and plugins

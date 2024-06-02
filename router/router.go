@@ -17,6 +17,7 @@ func Router() {
 
 	r.HandleFunc("/", HomePage)
 	r.HandleFunc("/dogs", Dogs).Methods("GET")
+	r.HandleFunc("/dogs/{id}", GetDog).Methods("GET")
 
 	http.ListenAndServe(":3000", r)
 }
@@ -45,4 +46,33 @@ func Dogs(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(results)
+}
+
+func GetDog(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+    id := vars["id"]
+	rows, err := controllers.GetDog(id)
+	if err != nil {
+		return
+	}
+
+	dog := models.Dog{}
+	for rows.Next() {
+	err = rows.StructScan(&dog)
+		if err != nil {
+			fmt.Println("err", err)
+		}
+	}
+		
+	result, err := json.Marshal(dog)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	
+	defer rows.Close()
+	defer database.DatabaseConnexion().Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 }

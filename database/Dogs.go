@@ -15,3 +15,13 @@ func Dogs(w http.ResponseWriter, r *http.Request) (rows *sqlx.Rows, err error) {
 	return rows, err
 
 }
+
+func GetDog(id string) (rows *sqlx.Rows, err error) {
+	rows, err = DatabaseConnexion().Queryx("SELECT * FROM dog WHERE id = $1", id)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return rows, err
+
+}
