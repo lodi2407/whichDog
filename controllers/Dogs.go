@@ -1,14 +1,30 @@
 package controllers
 
 import (
-	"net/http"
+	"net/url"
 	"whichDog/database"
 
 	"github.com/jmoiron/sqlx"
 )
 
-func Dogs(w http.ResponseWriter, r *http.Request) (rows *sqlx.Rows, err error) {
-	rows, err = database.Dogs(w, r)
+func Dogs( queryParams url.Values) (rows *sqlx.Rows, err error) {
+	category := queryParams.Get("category")
+	// sheddingCategory := queryParams.Get("sheddingCategory")
+	
+	var query string
+	args := []interface{}{}
+
+	if category != "" {
+		query += " AND category = $1"
+		args = append(args, category)
+	}
+
+	// if sheddingCategory != "" {
+	// 	query += " AND shedding_category = $2"
+	// 	args = append(args, category)
+	// }
+
+	rows, err = database.Dogs(query, args)
 
 	return rows, err
 }
