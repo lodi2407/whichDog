@@ -2,27 +2,26 @@ package controllers
 
 import (
 	"net/url"
+	"strconv"
 	"whichDog/database"
 
 	"github.com/jmoiron/sqlx"
 )
 
-func Dogs( queryParams url.Values) (rows *sqlx.Rows, err error) {
-	category := queryParams.Get("category")
-	// sheddingCategory := queryParams.Get("sheddingCategory")
+func ListDogs(queryParams url.Values) (rows *sqlx.Rows, err error) {
+	columnNames := database.ColumnsName()
 	
 	var query string
 	args := []interface{}{}
+	paramIndex := 1
 
-	if category != "" {
-		query += " AND category = $1"
-		args = append(args, category)
+	for _, column := range columnNames {
+		if value := queryParams.Get(column); value != "" {
+			query += " AND " + column + " = $" + strconv.Itoa(paramIndex)
+			args = append(args, value)
+			paramIndex++
+		}
 	}
-
-	// if sheddingCategory != "" {
-	// 	query += " AND shedding_category = $2"
-	// 	args = append(args, category)
-	// }
 
 	rows, err = database.Dogs(query, args)
 

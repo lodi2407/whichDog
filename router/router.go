@@ -29,7 +29,10 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 func Dogs(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 
-	rows, err := controllers.Dogs(queryParams)
+	rows, err := controllers.ListDogs(queryParams)
+	if err != nil {
+		fmt.Println("err", err)
+	}
 
 	dogs := []models.Dog{}
 	err = sqlx.StructScan(rows, &dogs)
