@@ -33,3 +33,12 @@ func GetDog(id string) (rows *sqlx.Rows, err error) {
 
 	return rows, err
 }
+
+
+// --------------------------- categories -----------------------------------------------
+
+func TrainabilityCategories() (rows *sqlx.Rows, err error) {
+	rows, err = database.TrainabilityCategories()
+
+	return rows, err
+}
