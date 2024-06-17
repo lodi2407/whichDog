@@ -19,7 +19,12 @@ func Router() {
 
 	r.HandleFunc("/", HomePage)
 	r.HandleFunc("/dogs", ListDogs).Methods("GET")
+	r.HandleFunc("/dogs/categories", Categories).Methods("GET")
 	r.HandleFunc("/dogs/trainability", TrainabilityCategories).Methods("GET")
+	r.HandleFunc("/dogs/shedding", SheddingCategories).Methods("GET")
+	r.HandleFunc("/dogs/grooming", GroomingCategories).Methods("GET")
+	r.HandleFunc("/dogs/energy", EnergyCategories).Methods("GET")
+	r.HandleFunc("/dogs/demeanor", DemeanorCategories).Methods("GET")
 	r.HandleFunc("/dogs/{id}", GetDog).Methods("GET")
 	
 
@@ -90,13 +95,13 @@ func GetDog(w http.ResponseWriter, r *http.Request) {
 
 // --------------------------- categories -----------------------------------------------
 
-func TrainabilityCategories(w http.ResponseWriter, r *http.Request) {
-	rows, err := controllers.TrainabilityCategories()
+func Categories(w http.ResponseWriter, r *http.Request) {
+	rows, err := controllers.Categories()
 	if err != nil {
 		return
 	}
 
-	var trainabilitycategories []string
+	var categories []string
 	for rows.Next() {
         var categoryName sql.NullString
 		if err := rows.Scan(&categoryName); err != nil {
@@ -105,11 +110,11 @@ func TrainabilityCategories(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if categoryName.Valid {
-			trainabilitycategories = append(trainabilitycategories, categoryName.String)
+			categories = append(categories, categoryName.String)
 		}
     }
 
-	result, err := json.Marshal(trainabilitycategories)
+	result, err := json.Marshal(categories)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -117,6 +122,96 @@ func TrainabilityCategories(w http.ResponseWriter, r *http.Request) {
 
 	defer rows.Close() 
 	defer database.DatabaseConnexion().Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(result); err != nil {
+        log.Println("Error writing response:", err)
+    }
+}
+
+func TrainabilityCategories(w http.ResponseWriter, r *http.Request) {
+	trainabilityCategories, err := controllers.TrainabilityCategories()
+	if err != nil {
+		return
+	}
+
+	result, err := json.Marshal(trainabilityCategories)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(result); err != nil {
+        log.Println("Error writing response:", err)
+    }
+}
+
+func SheddingCategories(w http.ResponseWriter, r *http.Request) {
+	sheddingCategories, err := controllers.SheddingCategories()
+	if err != nil {
+		return
+	}
+
+	result, err := json.Marshal(sheddingCategories)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(result); err != nil {
+        log.Println("Error writing response:", err)
+    }
+}
+
+func GroomingCategories(w http.ResponseWriter, r *http.Request) {
+	groomingCategories, err := controllers.GroomingCategories()
+	if err != nil {
+		return
+	}
+
+	result, err := json.Marshal(groomingCategories)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(result); err != nil {
+        log.Println("Error writing response:", err)
+    }
+}
+
+func EnergyCategories(w http.ResponseWriter, r *http.Request) {
+	energyCategories, err := controllers.EnergyCategories()
+	if err != nil {
+		return
+	}
+
+	result, err := json.Marshal(energyCategories)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(result); err != nil {
+        log.Println("Error writing response:", err)
+    }
+}
+
+func DemeanorCategories(w http.ResponseWriter, r *http.Request) {
+	demeanorCategories, err := controllers.DemeanorCategories()
+	if err != nil {
+		return
+	}
+
+	result, err := json.Marshal(demeanorCategories)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if _, err := w.Write(result); err != nil {

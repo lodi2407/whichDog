@@ -60,6 +60,17 @@ func ColumnsName() (columnNames []string) {
 	return columnNames
 }
 
+func Categories() (rows *sqlx.Rows, err error) {
+	query := "SELECT DISTINCT category FROM dog"
+	rows, err = DatabaseConnexion().Queryx(query)
+	if err != nil {
+		fmt.Println(err)
+		panic(err.Error())
+	}
+
+	return rows, err
+}
+
 func TrainabilityCategories() (rows *sqlx.Rows, err error) {
 	query := "SELECT DISTINCT trainabilitycategory FROM dog"
 	rows, err = DatabaseConnexion().Queryx(query)
@@ -71,24 +82,47 @@ func TrainabilityCategories() (rows *sqlx.Rows, err error) {
 	return rows, err
 }
 
-func SheddingCategories() (sheddingCategories []string) {
+func SheddingCategories() (rows *sqlx.Rows, err error) {
 	query := "SELECT DISTINCT sheddingcategory FROM dog"
-	rows, err := DatabaseConnexion().Queryx(query)
+	rows, err = DatabaseConnexion().Queryx(query)
 	if err != nil {
 		fmt.Println(err)
 		panic(err.Error())
 	}
 
-	for rows.Next() {
-        var categoryName string
-        if err := rows.Scan(&categoryName); err != nil {
+	return rows, err
+}
+
+func GroomingCategories() (rows *sqlx.Rows, err error) {
+	query := "SELECT DISTINCT groomingfrequencycategory FROM dog"
+	rows, err = DatabaseConnexion().Queryx(query)
+	if err != nil {
+		fmt.Println(err)
+		panic(err.Error())
+	}
+
+	return rows, err
+}
+
+func EnergyCategories() (rows *sqlx.Rows, err error) {
+	query := "SELECT DISTINCT energylevelcategory FROM dog"
+	rows, err = DatabaseConnexion().Queryx(query)
+	if err != nil {
+		fmt.Println(err)
+		panic(err.Error())
+	}
+
+	return rows, err
+}
+
+func DemeanorCategories() (rows *sqlx.Rows, err error) {
+	query := "SELECT DISTINCT demeanorcategory FROM dog"
+	rows, err = DatabaseConnexion().Queryx(query)
+	if err != nil {
 			fmt.Println(err)
 			panic(err.Error())
         }
-        sheddingCategories = append(sheddingCategories, categoryName)
-    }
 
-	defer rows.Close()
-
-	return sheddingCategories
+	return rows, err
+}
 }
