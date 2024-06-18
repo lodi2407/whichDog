@@ -25,6 +25,7 @@ func Router() {
 	r.HandleFunc("/dogs/grooming", GroomingCategories).Methods("GET")
 	r.HandleFunc("/dogs/energy", EnergyCategories).Methods("GET")
 	r.HandleFunc("/dogs/demeanor", DemeanorCategories).Methods("GET")
+	r.HandleFunc("/dogs/temperament", TemperamentCategories).Methods("GET")
 	r.HandleFunc("/dogs/{id}", GetDog).Methods("GET")
 	
 
@@ -208,6 +209,24 @@ func DemeanorCategories(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result, err := json.Marshal(demeanorCategories)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(result); err != nil {
+        log.Println("Error writing response:", err)
+    }
+}
+
+func TemperamentCategories(w http.ResponseWriter, r *http.Request) {
+	temperamentCategories, err := controllers.TemperamentCategories()
+	if err != nil {
+		return
+	}
+
+	result, err := json.Marshal(temperamentCategories)
 	if err != nil {
 		fmt.Println(err)
 		return

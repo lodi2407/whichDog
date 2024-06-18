@@ -119,10 +119,20 @@ func DemeanorCategories() (rows *sqlx.Rows, err error) {
 	query := "SELECT DISTINCT demeanorcategory FROM dog"
 	rows, err = DatabaseConnexion().Queryx(query)
 	if err != nil {
-			fmt.Println(err)
-			panic(err.Error())
-        }
+		fmt.Println(err)
+		panic(err.Error())
+	}
 
 	return rows, err
 }
+
+func TemperamentCategories() (rows *sqlx.Rows, err error) {
+	query := "SELECT DISTINCT temperament FROM dog"
+	rows, err = DatabaseConnexion().Queryx(query)
+	if err != nil {
+		fmt.Println(err)
+		panic(err.Error())
+	}
+
+	return rows, err
 }

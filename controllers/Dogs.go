@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"database/sql"
 	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
 	"whichDog/database"
 
 	"github.com/jmoiron/sqlx"
@@ -147,4 +149,42 @@ func DemeanorCategories() (demeanorCategories []string, err error) {
 	defer database.DatabaseConnexion().Close()
 
 	return demeanorCategories, err
+}
+
+func TemperamentCategories() (temperamentCategories []string, err error) {
+	rows, err := database.TemperamentCategories()
+
+	for rows.Next() {
+        var categoryName sql.NullString
+		if err := rows.Scan(&categoryName); err != nil {
+			fmt.Println(err)
+			panic(err.Error())
+		}
+
+		if categoryName.Valid {
+			category := categoryName.String
+			array := strings.Split(category, ",")
+			// removes spaces at the begining or end of the string
+			for i, val := range array {
+                array[i] = strings.TrimSpace(val)
+            }
+			temperamentCategories = append(temperamentCategories, array...)
+		} 
+    }
+
+	uniqueMap := make(map[string]bool)
+	uniqueCategories := []string{}
+
+	// keep distinct values
+	for _, val := range temperamentCategories {
+        if _, ok := uniqueMap[val]; !ok {
+            uniqueMap[val] = true
+            uniqueCategories = append(uniqueCategories, val)
+        }
+    }
+
+	defer rows.Close() 
+	defer database.DatabaseConnexion().Close()
+
+	return uniqueCategories, err
 }
